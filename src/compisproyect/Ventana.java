@@ -121,8 +121,9 @@ public class Ventana extends javax.swing.JFrame {
                                 resultado += "Simbolo no definido";
                             
                                 break;
-                                case  Reservadas: case Numero: case Identificador:
-                                resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
+                                
+                                case ComentarioLinea: case String1: case  Reservadas: case Numero: case Identificador:
+                                    resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
                             
                                 break;
                             

@@ -18,5 +18,8 @@ public enum Tokens {
     Division,
     Identificador,
     Numero,
+    Booleano,
+    String1,
+    ComentarioLinea,
     ERROR;
 }

@@ -6,7 +6,13 @@ import static compisproyect.Tokens.*;
 %type Tokens
 Letra=[a-zA-Z_]+
 Digito=[0-9]+
-espacios=[ ,\t,\n]+
+Enteros = {Digito}+"."?{Digito}*
+Espacios = [ ,\t,\n]+
+boolean = [0] | [1] | [NULL]
+String = "'"({Letra}({Letra} | {Digito})*)"'"
+Operadores = ["+","-","/","*","%"]
+Comparadores=[">","<","<=",">=","==","!="]
+ComentarioLinea = "--"({Letra}|{Digito}|{Enteros}|{boolean}|{String}|{Operadores}|{Comparadores})*
 %{
     public String lexeme;
 %} 
@@ -156,7 +162,7 @@ ESCAPE | OUTER | YEAR |
 EXCEPT | OUTPUT | ZONE |
 EXCEPTION |
 while {lexeme=yytext(); return Reservadas;}
-{espacios} {/*Ignore*/}
+{Espacios} {/*Ignore*/}
 "//".* {/*Ignore*/}
 "=" {return Igual;}
 "+" {return Suma;}
@@ -165,4 +171,7 @@ while {lexeme=yytext(); return Reservadas;}
 "/" {return Division;}
 {Letra}({Letra}|{Digito})* {lexeme=yytext(); return Identificador;}
 ("(-"{Digito}+")")|{Digito}+ {lexeme = yytext(); return Numero;}
+{boolean} {lexeme= yytext(); return Booleano;}
+{String} {lexeme = yytext(); return String1;}
+{ComentarioLinea} {lexeme = yytext(); return ComentarioLinea;}
  . {return ERROR;}
