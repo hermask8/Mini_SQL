@@ -17,9 +17,13 @@ public enum Tokens {
     Multiplicacion,
     Division,
     Identificador,
-    Numero,
+    Entero,
     Booleano,
     String1,
+    Comparador,
+    Double,
+    Operador,
+    Simbolo,
     ComentarioLinea,
     ERROR;
 }

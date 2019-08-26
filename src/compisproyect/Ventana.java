@@ -122,8 +122,8 @@ public class Ventana extends javax.swing.JFrame {
                             
                                 break;
                                 
-                                case ComentarioLinea: case String1: case  Reservadas: case Numero: case Identificador:
-                                    resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
+                                case Comparador: case Double: case Operador: case Simbolo:   case ComentarioLinea: case String1: case  Reservadas: case Entero: case Identificador:
+                                    resultado += "<" + lexer.lexeme + ",! Es Un:" + tokens + ">";
                             
                                 break;
                             

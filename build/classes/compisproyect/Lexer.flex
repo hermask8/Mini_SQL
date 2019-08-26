@@ -6,13 +6,19 @@ import static compisproyect.Tokens.*;
 %type Tokens
 Letra=[a-zA-Z_]+
 Digito=[0-9]+
-Enteros = {Digito}+"."?{Digito}*
+Enteros = {Digito}+
 Espacios = [ ,\t,\n]+
 boolean = [0] | [1] | [NULL]
-String = "'"({Letra}({Letra} | {Digito})*)"'"
+String = "'"({Letra}({Letra} | {Digito} | " ")*)"'"
 Operadores = ["+","-","/","*","%"]
-Comparadores=[">","<","<=",">=","==","!="]
+Signos = ["+","-"]
+Operador = {Operadores}?
+Comparadores = [">","<","<=",">=","==","!="]
+Comparador = {Comparadores}?
+Simbolos = ["&&","||","!",";",",",".","[","]","(",")","{","}","{}","[]","()","@","#","##"] 
+Simbolo = {Simbolos}?
 ComentarioLinea = "--"({Letra}|{Digito}|{Enteros}|{boolean}|{String}|{Operadores}|{Comparadores})*
+Double = {Digito}+"."{Digito}*("E"|"e")?{Signos}?{Digito}*
 %{
     public String lexeme;
 %} 
@@ -170,8 +176,12 @@ while {lexeme=yytext(); return Reservadas;}
 "*" {return Multiplicacion;}
 "/" {return Division;}
 {Letra}({Letra}|{Digito})* {lexeme=yytext(); return Identificador;}
-("(-"{Digito}+")")|{Digito}+ {lexeme = yytext(); return Numero;}
+("(-"{Digito}+")")|{Digito}+ {lexeme = yytext(); return Entero;}
 {boolean} {lexeme= yytext(); return Booleano;}
 {String} {lexeme = yytext(); return String1;}
 {ComentarioLinea} {lexeme = yytext(); return ComentarioLinea;}
+{Double} {lexeme = yytext(); return Double;}
+{Operador} {lexeme = yytext(); return Operador;}
+{Comparador} {lexeme = yytext(); return Operador;}
+{Simbolo} {lexeme = yytext(); return Simbolo;}
  . {return ERROR;}
