@@ -10,21 +10,20 @@ package compisproyect;
  * @author herma
  */
 public enum Tokens {
-    ComentarioLinea,
-    ComentarioMultilinea,
     Reservadas,
-    Igual,
-    Suma,
-    Resta,
-    Multiplicacion,
-    Division,
     Identificador,
-    Entero,
-    Booleano,
+    Enteros,
+    Float,
     String1,
-    Comparador,
-    Double,
+    Separador,
     Operador,
+    Comparador,
     Simbolo,
+    ErrorFloat,
+    ErrorIdentificador, 
+    ErrorString,
+    ErrorMultilinea,
+    ComentarioMultilinea,
+    ComentarioLinea,
     ERROR;
 }

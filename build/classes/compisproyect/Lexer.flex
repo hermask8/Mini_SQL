@@ -4,7 +4,8 @@ import static compisproyect.Tokens.*;
 %%
 %class Lexer
 %type Tokens
-
+%line
+%column
 
 /*Ingreso de digitos y letras*/
 Letra=[a-zA-Z_]+
@@ -15,34 +16,35 @@ Comparadores = [">","<","<=",">=","==","!="]
 Operador = {Operadores}?
 Comparador = {Comparadores}?
 Simbolos = ["&&","||","!",";",",",".","[","]","(",")","{","}","{}","[]","()","@","#","##"] 
+Separador = [,]
 Simbolo = {Simbolos}?
 Espacios = [" ",\t,\n,\r]+
 Enter = [\n|\r|\n\r|\r\n]
 /*Termina el Ingreso de digitos y letras*/
 
 /*Expresiones Regulares Correctas*/
-ComentarioMultilinea ="*/"[^*]~"*/" 
+ComentarioMultilinea ="/*"[^*]~"*/" 
+
 ComentarioLinea = "--"[^]~([\r]|[\n])
 Enteros = {Signos}?{Digito}+
 boolean = [0] | [1] | [NULL]
 Identificador = {Letra}({Letra}|{Digito})*
 String = "'"({Letra}({Letra} | {Digito} | " ")*)"'"
 
-Double = {Signos}?{Digito}+"."{Digito}*("E"|"e")?{Signos}?{Digito}*
+Float = {Signos}?{Digito}+"."{Digito}*("E"({Signos}?)|"e"({Signos}?))?{Digito}*
 
-/* Fin de Expresiones Regulares Correctas*/
+/*Fin de Expresiones Regulares Correctas*/
 
 /*Expresiones Regulares Incorrectas*/
-ErrorDouble = {Signos}?"."{Digito}*("E"|"e")?{Signos}?{Digito}*
+ErrorMultilinea = "/*"[^*]
+ErrorFloat = {Signos}?"."{Digito}*("E"|"e")?{Signos}?{Digito}*
 ErrorIdentificador = {Enteros}+{Identificador}
-/*Fin de Expresiones Regulares Incorrectas*/
-
-
-
-
+ErrorString = (("'"({Letra}({Letra} | {Digito} | " ")*))|("'"({Letra}({Letra} | {Digito} | " " |\n)*)"'"))
 
 %{
     public String lexeme;
+    public int linea;
+    public int columna;
 %} 
 %%
 int |
@@ -193,22 +195,21 @@ while
 {lexeme=yytext(); return Reservadas;}
 
 {Espacios} {/*Ignore*/}
-{ComentarioMultilinea} {lexeme = yytext(); return ComentarioMultilinea;}
-{ComentarioLinea} {lexeme = yytext(); return ComentarioLinea;}
+{ComentarioMultilinea} {lexeme = yytext(); linea = yyline; columna =yycolumn; return ComentarioMultilinea;}
+{ComentarioLinea} {lexeme = yytext(); linea = yyline; columna =yycolumn; return ComentarioLinea;}
 
 "//".* {/*Ignore*/}
-"=" {return Igual;}
-"+" {return Suma;}
-"-" {return Resta;}
-"*" {return Multiplicacion;}
-"/" {return Division;}
-{Identificador} {lexeme=yytext(); return Identificador;}
-{Enteros} {lexeme = yytext(); return Entero;}
-{boolean} {lexeme= yytext(); return Booleano;}
-{String} {lexeme = yytext(); return String1;}
 
-{Double} {lexeme = yytext(); return Double;}
-{Operador} {lexeme = yytext(); return Operador;}
-{Comparador} {lexeme = yytext(); return Operador;}
-{Simbolo} {lexeme = yytext(); return Simbolo;}
+{Identificador} {lexeme=yytext(); linea = yyline; columna =yycolumn; return Identificador;}
+{Enteros} {lexeme = yytext(); linea = yyline; columna =yycolumn; return Enteros;}
+{Float} {lexeme= yytext(); linea = yyline; columna =yycolumn; return Float;}
+{String} {lexeme = yytext(); linea = yyline; columna =yycolumn; return String1;}
+{Separador} {lexeme = yytext(); linea = yyline; columna =yycolumn; return Separador;}
+{Operador} {lexeme = yytext(); linea = yyline; columna =yycolumn; return Operador;}
+{Comparador} {lexeme = yytext(); linea = yyline; columna =yycolumn; return Comparador;}
+{Simbolo} {lexeme = yytext(); linea = yyline; columna =yycolumn; return Simbolo;}
+{ErrorFloat} {lexeme = yytext(); linea = yyline; columna =yycolumn; return ErrorFloat;}
+{ErrorIdentificador} {lexeme = yytext(); linea = yyline; columna =yycolumn; return ErrorIdentificador;} 
+{ErrorString} {lexeme = yytext(); linea = yyline; columna =yycolumn; return ErrorString;}
+{ErrorMultilinea} {lexeme = yytext(); linea = yyline; columna =yycolumn; return ErrorMultilinea;}
  . {return ERROR;}

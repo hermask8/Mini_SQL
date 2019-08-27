@@ -105,10 +105,26 @@ public class Ventana extends javax.swing.JFrame {
                     case ERROR:
                         resultado += "Simbolo no definido";        
                     break;
-                    case ComentarioMultilinea: case ComentarioLinea: case Comparador: case Double: case Operador: case Simbolo:  case String1: case  Reservadas: case Entero: case Identificador:
+                    case Reservadas:case Enteros:case Float:case String1:case Separador:case Operador:case Comparador:case Simbolo:case ErrorFloat:
+                    case ErrorIdentificador: 
+                    case ErrorString:
+                    case ErrorMultilinea:
+                    case ComentarioMultilinea:
+                    case ComentarioLinea: 
                         resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
+                        
                         break;
-                            
+                    case Identificador:
+                        if (lexer.lexeme.length()<=31) {
+                            resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
+                        }
+                        else
+                        {
+                            String cadena = lexer.lexeme;
+                            cadena = cadena.substring(0,30);
+                            resultado += "<" + cadena + ", Es Un:" + tokens + ">";
+                        }
+                        break;
                     default:
                         resultado+= "Token: " + tokens;
                 
