@@ -4,21 +4,43 @@ import static compisproyect.Tokens.*;
 %%
 %class Lexer
 %type Tokens
+
+
+/*Ingreso de digitos y letras*/
 Letra=[a-zA-Z_]+
 Digito=[0-9]+
-Enteros = {Digito}+
-Espacios = [ ,\t,\n]+
-boolean = [0] | [1] | [NULL]
-String = "'"({Letra}({Letra} | {Digito} | " ")*)"'"
 Operadores = ["+","-","/","*","%"]
 Signos = ["+","-"]
-Operador = {Operadores}?
 Comparadores = [">","<","<=",">=","==","!="]
+Operador = {Operadores}?
 Comparador = {Comparadores}?
 Simbolos = ["&&","||","!",";",",",".","[","]","(",")","{","}","{}","[]","()","@","#","##"] 
 Simbolo = {Simbolos}?
-ComentarioLinea = "--"({Letra}|{Digito}|{Enteros}|{boolean}|{String}|{Operadores}|{Comparadores})*
-Double = {Digito}+"."{Digito}*("E"|"e")?{Signos}?{Digito}*
+Espacios = [" ",\t,\n,\r]+
+Enter = [\n|\r|\n\r|\r\n]
+/*Termina el Ingreso de digitos y letras*/
+
+/*Expresiones Regulares Correctas*/
+ComentarioMultilinea ="*/"[^*]~"*/" 
+ComentarioLinea = "--"[^]~([\r]|[\n])
+Enteros = {Signos}?{Digito}+
+boolean = [0] | [1] | [NULL]
+Identificador = {Letra}({Letra}|{Digito})*
+String = "'"({Letra}({Letra} | {Digito} | " ")*)"'"
+
+Double = {Signos}?{Digito}+"."{Digito}*("E"|"e")?{Signos}?{Digito}*
+
+/* Fin de Expresiones Regulares Correctas*/
+
+/*Expresiones Regulares Incorrectas*/
+ErrorDouble = {Signos}?"."{Digito}*("E"|"e")?{Signos}?{Digito}*
+ErrorIdentificador = {Enteros}+{Identificador}
+/*Fin de Expresiones Regulares Incorrectas*/
+
+
+
+
+
 %{
     public String lexeme;
 %} 
@@ -167,19 +189,24 @@ END-EXEC | ORDER | WRITE |
 ESCAPE | OUTER | YEAR |
 EXCEPT | OUTPUT | ZONE |
 EXCEPTION |
-while {lexeme=yytext(); return Reservadas;}
+while 
+{lexeme=yytext(); return Reservadas;}
+
 {Espacios} {/*Ignore*/}
+{ComentarioMultilinea} {lexeme = yytext(); return ComentarioMultilinea;}
+{ComentarioLinea} {lexeme = yytext(); return ComentarioLinea;}
+
 "//".* {/*Ignore*/}
 "=" {return Igual;}
 "+" {return Suma;}
 "-" {return Resta;}
 "*" {return Multiplicacion;}
 "/" {return Division;}
-{Letra}({Letra}|{Digito})* {lexeme=yytext(); return Identificador;}
-("(-"{Digito}+")")|{Digito}+ {lexeme = yytext(); return Entero;}
+{Identificador} {lexeme=yytext(); return Identificador;}
+{Enteros} {lexeme = yytext(); return Entero;}
 {boolean} {lexeme= yytext(); return Booleano;}
 {String} {lexeme = yytext(); return String1;}
-{ComentarioLinea} {lexeme = yytext(); return ComentarioLinea;}
+
 {Double} {lexeme = yytext(); return Double;}
 {Operador} {lexeme = yytext(); return Operador;}
 {Comparador} {lexeme = yytext(); return Operador;}

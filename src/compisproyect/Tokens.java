@@ -10,6 +10,8 @@ package compisproyect;
  * @author herma
  */
 public enum Tokens {
+    ComentarioLinea,
+    ComentarioMultilinea,
     Reservadas,
     Igual,
     Suma,
@@ -24,6 +26,5 @@ public enum Tokens {
     Double,
     Operador,
     Simbolo,
-    ComentarioLinea,
     ERROR;
 }

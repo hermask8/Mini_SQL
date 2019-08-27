@@ -7,8 +7,13 @@ package compisproyect;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 
 /**
@@ -79,73 +84,42 @@ public class Ventana extends javax.swing.JFrame {
 
     private void btnBuscarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarArchivoActionPerformed
         // TODO add your handling code here:
+                                             
+        JFileChooser file = new JFileChooser();
+        file.showOpenDialog(this);
         try {
             
-            JFileChooser file = new JFileChooser();
-            file.showOpenDialog(this);
-            File abrir = file.getSelectedFile();
-            
-            if (abrir!=null)
+            Reader lector = new BufferedReader(new FileReader(file.getSelectedFile()));
+            Lexer lexer = new Lexer(lector);
+            String resultado = "";
+            while(true)
             {
-                FileReader leerArchivo = new FileReader(abrir);
-                BufferedReader leyendo = new BufferedReader(leerArchivo);
-                String linea = leyendo.readLine();
-                String resultado = "";
-                while(linea!=null)
+                Tokens tokens = lexer.yylex();
+  
+                if (tokens == null) 
                 {
-                    File file2 = new File("C:/Users/herma/Desktop/Archivos Pueba Compis/archivo.txt");
-                    PrintWriter escribir = new PrintWriter(file2);
-                    escribir.print(linea);
-                    escribir.close();
-                    FileReader lectura = new FileReader("C:/Users/herma/Desktop/Archivos Pueba Compis/archivo.txt");
-                    BufferedReader lee = new BufferedReader(lectura);
-                
-                    Lexer lexer = new Lexer(lee);
-                
-                    boolean salir = false;
-                    while(!salir)
-                    {
-                        Tokens tokens = lexer.yylex();
-                        
-                        if (tokens==null) 
-                        {
-                            resultado +="FIN";
-                            txtListado1.setText(resultado);
-                            salir = true;
-                        }
-                        else
-                        {
-                           switch(tokens)
-                            {
-                                case ERROR:
-                                resultado += "Simbolo no definido";
-                            
-                                break;
-                                
-                                case Comparador: case Double: case Operador: case Simbolo:   case ComentarioLinea: case String1: case  Reservadas: case Entero: case Identificador:
-                                    resultado += "<" + lexer.lexeme + ",! Es Un:" + tokens + ">";
-                            
-                                break;
-                            
-                                default: 
-                                resultado+= "Token: " + tokens + "\n";
-                            
-                            } 
-                        }
-                        
-                        resultado += "\n";
-                    }
-                    lectura.close();
-                    lee.close();
-                    linea = leyendo.readLine();
+                    return;
                 }
+                switch(tokens)
+                {
+                    case ERROR:
+                        resultado += "Simbolo no definido";        
+                    break;
+                    case ComentarioMultilinea: case ComentarioLinea: case Comparador: case Double: case Operador: case Simbolo:  case String1: case  Reservadas: case Entero: case Identificador:
+                        resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
+                        break;
+                            
+                    default:
+                        resultado+= "Token: " + tokens;
                 
-               
+                }
+                resultado += "\n";
+                txtListado1.setText(resultado);
             }
         }
-        catch (Exception e) 
+        catch (IOException ex) 
         {
-            
+             
         }
     }//GEN-LAST:event_btnBuscarArchivoActionPerformed
 
