@@ -16,7 +16,7 @@ Comparadores = [">","<","<=",">=","==","!="]
 Operador = {Operadores}?
 Comparador = {Comparadores}?
 Simbolos = ["&&","||","!",";",",",".","[","]","(",")","{","}","{}","[]","()","@","#","##"] 
-Separador = [,]
+Separador = [","]
 Simbolo = {Simbolos}?
 Espacios = [" ",\t,\n,\r]+
 Enter = [\n|\r|\n\r|\r\n]
@@ -31,13 +31,13 @@ boolean = [0] | [1] | [NULL]
 Identificador = {Letra}({Letra}|{Digito})*
 String = "'"({Letra}({Letra} | {Digito} | " ")*)"'"
 
-Float = {Signos}?{Digito}+"."{Digito}*("E"({Signos}?)|"e"({Signos}?))?{Digito}*
+Float = {Signos}?{Digito}+"."{Digito}*("E"({Signos}?)|"e"({Signos}?))?{Digito}+
 
 /*Fin de Expresiones Regulares Correctas*/
 
 /*Expresiones Regulares Incorrectas*/
 ErrorMultilinea = "/*"[^*]
-ErrorFloat = {Signos}?"."{Digito}*("E"|"e")?{Signos}?{Digito}*
+ErrorFloat = (({Signos}?"."{Digito}*("E"|"e")?{Signos}?{Digito}*)|({Signos}?{Digito}+"."{Digito}*("E"({Signos}?)|"e"({Signos}?))?))
 ErrorIdentificador = {Enteros}+{Identificador}
 ErrorString = (("'"({Letra}({Letra} | {Digito} | " ")*))|("'"({Letra}({Letra} | {Digito} | " " |\n)*)"'"))
 

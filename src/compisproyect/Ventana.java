@@ -6,9 +6,11 @@
 package compisproyect;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
@@ -28,6 +30,7 @@ public class Ventana extends javax.swing.JFrame {
     public Ventana() {
         initComponents();
         this.setLocationRelativeTo(null);
+        
     }
 
     /**
@@ -42,6 +45,7 @@ public class Ventana extends javax.swing.JFrame {
         btnBuscarArchivo = new javax.swing.JButton();
         txtListado = new javax.swing.JScrollPane();
         txtListado1 = new javax.swing.JTextArea();
+        btnGuardar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,15 +60,24 @@ public class Ventana extends javax.swing.JFrame {
         txtListado1.setRows(5);
         txtListado.setViewportView(txtListado1);
 
+        btnGuardar.setText("Guardar Archivo");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addComponent(txtListado, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+                .addComponent(txtListado, javax.swing.GroupLayout.DEFAULT_SIZE, 592, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnBuscarArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnBuscarArchivo, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(42, 42, 42))
         );
         layout.setVerticalGroup(
@@ -72,16 +85,19 @@ public class Ventana extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtListado, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscarArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(29, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnBuscarArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtListado, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         btnBuscarArchivo.getAccessibleContext().setAccessibleName("btnBuscarArchivo");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    public String resultadoFinal = "";
     private void btnBuscarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarArchivoActionPerformed
         // TODO add your handling code here:
                                              
@@ -105,15 +121,25 @@ public class Ventana extends javax.swing.JFrame {
                     case ERROR:
                         resultado += "Simbolo no definido";        
                     break;
-                    case Reservadas:case Enteros:case Float:case String1:case Separador:case Operador:case Comparador:case Simbolo:case ErrorFloat:
-                    case ErrorIdentificador: 
-                    case ErrorString:
-                    case ErrorMultilinea:
+                    
+                    
+                    case Reservadas:case Enteros:case Float:case String1:case Separador:case Operador:case Comparador:case Simbolo:
                     case ComentarioMultilinea:
                     case ComentarioLinea: 
                         resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
                         
                         break;
+                    
+                    
+                    case ErrorFloat:
+                    case ErrorIdentificador: 
+                    case ErrorString:
+                    case ErrorMultilinea:
+                       resultado += "<" + lexer.lexeme + ", Error en la fila:" + (lexer.linea + 1)  + " Columna: " + (lexer.columna + 1); 
+                        
+                        break;
+                    
+                    
                     case Identificador:
                         if (lexer.lexeme.length()<=31) {
                             resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
@@ -131,6 +157,7 @@ public class Ventana extends javax.swing.JFrame {
                 }
                 resultado += "\n";
                 txtListado1.setText(resultado);
+                resultadoFinal = resultado;
             }
         }
         catch (IOException ex) 
@@ -138,6 +165,24 @@ public class Ventana extends javax.swing.JFrame {
              
         }
     }//GEN-LAST:event_btnBuscarArchivoActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        // TODO add your handling code here:
+        JFileChooser guardarComo = new JFileChooser();
+        guardarComo.setApproveButtonText("Guardar");
+        guardarComo.showSaveDialog(null);
+        File archivo  = new File(guardarComo.getSelectedFile()+".out");
+        try
+        {
+            BufferedWriter salida = new BufferedWriter(new FileWriter(archivo)); 
+            salida.write(resultadoFinal);
+            salida.close();
+        }
+        catch(Exception ex)
+        {
+            
+        }
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -176,6 +221,7 @@ public class Ventana extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscarArchivo;
+    private javax.swing.JButton btnGuardar;
     private javax.swing.JScrollPane txtListado;
     private javax.swing.JTextArea txtListado1;
     // End of variables declaration//GEN-END:variables
