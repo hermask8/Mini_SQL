@@ -15,7 +15,7 @@ Signos = ["+","-"]
 Comparadores = [">","<","<=",">=","==","!="]
 Operador = {Operadores}?
 Comparador = {Comparadores}?
-Simbolos = ["&&","||","!",";",",",".","[","]","(",")","{","}","{}","[]","()","@","#","##"] 
+Simbolos = ["&&"|"||"|"!"|";"|","|"."|"["|"]"|"("|")"|"{"|"}"|"{}"|"[]"|"()"|"@"|"#"|"##"] 
 Separador = [","]
 Simbolo = {Simbolos}?
 Espacios = [" ",\t,\n,\r]+
@@ -37,7 +37,6 @@ Float = {Signos}?{Digito}+"."{Digito}*("E"({Signos}?)|"e"({Signos}?))?{Digito}+
 
 /*Expresiones Regulares Incorrectas*/
 ErrorMultilinea = "/*"[^*]
-ErrorFloat = (({Signos}?"."{Digito}*("E"|"e")?{Signos}?{Digito}*)|({Signos}?{Digito}+"."{Digito}*("E"({Signos}?)|"e"({Signos}?))?))
 ErrorIdentificador = {Enteros}+{Identificador}
 ErrorString = (("'"({Letra}({Letra} | {Digito} | " ")*))|("'"({Letra}({Letra} | {Digito} | " " |\n)*)"'"))
 
@@ -199,7 +198,7 @@ while
 {ComentarioLinea} {lexeme = yytext(); linea = yyline; columna =yycolumn; return ComentarioLinea;}
 
 "//".* {/*Ignore*/}
-
+{Simbolo} {lexeme = yytext(); linea = yyline; columna =yycolumn; return Simbolo;}
 {Identificador} {lexeme=yytext(); linea = yyline; columna =yycolumn; return Identificador;}
 {Enteros} {lexeme = yytext(); linea = yyline; columna =yycolumn; return Enteros;}
 {Float} {lexeme= yytext(); linea = yyline; columna =yycolumn; return Float;}
@@ -207,8 +206,7 @@ while
 {Separador} {lexeme = yytext(); linea = yyline; columna =yycolumn; return Separador;}
 {Operador} {lexeme = yytext(); linea = yyline; columna =yycolumn; return Operador;}
 {Comparador} {lexeme = yytext(); linea = yyline; columna =yycolumn; return Comparador;}
-{Simbolo} {lexeme = yytext(); linea = yyline; columna =yycolumn; return Simbolo;}
-{ErrorFloat} {lexeme = yytext(); linea = yyline; columna =yycolumn; return ErrorFloat;}
+
 {ErrorIdentificador} {lexeme = yytext(); linea = yyline; columna =yycolumn; return ErrorIdentificador;} 
 {ErrorString} {lexeme = yytext(); linea = yyline; columna =yycolumn; return ErrorString;}
 {ErrorMultilinea} {lexeme = yytext(); linea = yyline; columna =yycolumn; return ErrorMultilinea;}

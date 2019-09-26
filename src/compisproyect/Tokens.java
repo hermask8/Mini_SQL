@@ -19,7 +19,6 @@ public enum Tokens {
     Operador,
     Comparador,
     Simbolo,
-    ErrorFloat,
     ErrorIdentificador, 
     ErrorString,
     ErrorMultilinea,

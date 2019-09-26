@@ -14,6 +14,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -108,6 +110,7 @@ public class Ventana extends javax.swing.JFrame {
             Reader lector = new BufferedReader(new FileReader(file.getSelectedFile()));
             Lexer lexer = new Lexer(lector);
             String resultado = "";
+            List<String> list = new ArrayList<String>();
             while(true)
             {
                 Tokens tokens = lexer.yylex();
@@ -121,17 +124,30 @@ public class Ventana extends javax.swing.JFrame {
                     case ERROR:
                         resultado += "Simbolo no definido";        
                     break;
+                    case Enteros:
+                        resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
+                        list.add("Enteros");
+                        break;
+                        
+                    case Simbolo:
+                        resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
+                        list.add(lexer.lexeme);
+                        if(lexer.lexeme.compareTo(";")==0)
+                        {
+                            Sintaxis sintaxis = new Sintaxis(list);
+                            list.clear();
+                        }
+                       
+                        break;
                     
-                    
-                    case Reservadas:case Enteros:case Float:case String1:case Separador:case Operador:case Comparador:case Simbolo:
+                    case Reservadas:case Float:case String1:case Separador:case Operador:case Comparador:
                     case ComentarioMultilinea:
                     case ComentarioLinea: 
                         resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
-                        
+                        list.add(lexer.lexeme);
                         break;
                     
                     
-                    case ErrorFloat:
                     case ErrorIdentificador: 
                     case ErrorString:
                     case ErrorMultilinea:
@@ -141,6 +157,7 @@ public class Ventana extends javax.swing.JFrame {
                     
                     
                     case Identificador:
+                        list.add("Identificador");
                         if (lexer.lexeme.length()<=31) {
                             resultado += "<" + lexer.lexeme + ", Es Un:" + tokens + ">";
                         }

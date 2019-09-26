@@ -14,7 +14,7 @@ import java.io.File;
 public class Principal {
     public static void main(String[] args)
     {
-        String ruta = "C:/Users/herma/Documents/NetBeansProjects/compisProyect/src/compisproyect/Lexer.flex";
+        String ruta = "C:/Users/herma/Desktop/ProyectoCompis/Mini_SQL/src/compisproyect/Lexer.flex";
         generarLexer(ruta);
         
     }
