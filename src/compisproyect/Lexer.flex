@@ -36,7 +36,7 @@ Float = {Signos}?{Digito}+"."{Digito}*("E"({Signos}?)|"e"({Signos}?))?{Digito}+
 /*Fin de Expresiones Regulares Correctas*/
 
 /*Expresiones Regulares Incorrectas*/
-ErrorMultilinea = "/*"[^*]
+ErrorMultilinea = "/*"[^]
 ErrorIdentificador = {Enteros}+{Identificador}
 ErrorString = (("'"({Letra}({Letra} | {Digito} | " ")*))|("'"({Letra}({Letra} | {Digito} | " " |\n)*)"'"))
 
